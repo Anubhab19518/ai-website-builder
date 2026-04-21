@@ -48,7 +48,7 @@ export function AuthForm({ type }: AuthFormProps) {
           password,
         });
         if (error) throw error;
-        router.push("/");
+        router.push("/dashboard");
       }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");
@@ -59,7 +59,12 @@ export function AuthForm({ type }: AuthFormProps) {
 
   const handleOAuth = async (provider: "google" | "apple") => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({ provider });
+      const { error } = await supabase.auth.signInWithOAuth({ 
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`
+        }
+      });
       if (error) throw error;
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");

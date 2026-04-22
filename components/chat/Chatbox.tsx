@@ -110,12 +110,12 @@ export default function ChatBox({ projectId }: { projectId: string }) {
   }
 
   return (
-    <div className="flex flex-col h-full w-full bg-transparent relative z-10">
+    <div className="flex flex-col h-full w-full bg-[var(--background)] relative z-10">
       <div className="flex-1 overflow-y-auto px-2 sm:px-6 space-y-6 scrollbar-hide">
         {messages.length === 0 && !loading && (
-          <div className="h-full flex flex-col items-center justify-center text-zinc-500 gap-3 opacity-60">
-            <div className="w-12 h-12 rounded-full bg-white/[0.03] border border-white/5 flex items-center justify-center">
-              <Sparkles size={20} className="text-zinc-400" />
+          <div className="h-full flex flex-col items-center justify-center text-[var(--muted-foreground)] gap-3 opacity-90">
+            <div className="w-12 h-12 rounded-full bg-[var(--muted)] border border-[var(--border)] flex items-center justify-center">
+              <Sparkles size={20} className="text-[var(--primary)]" />
             </div>
             <p className="font-light tracking-wide text-[15px]">Start typing to build your app</p>
           </div>
@@ -125,10 +125,10 @@ export default function ChatBox({ projectId }: { projectId: string }) {
         ))}
         {loading && (
           <div className="flex justify-start pt-2">
-            <div className="px-5 py-4 rounded-2xl rounded-tl-sm text-sm flex items-center gap-1.5 opacity-60">
-              <div className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-pulse"></div>
-              <div className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-pulse" style={{ animationDelay: "0.2s" }}></div>
-              <div className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-pulse" style={{ animationDelay: "0.4s" }}></div>
+            <div className="px-5 py-4 rounded-2xl rounded-tl-sm text-sm flex items-center gap-1.5 opacity-90 bg-[var(--card)] border border-[var(--border)]">
+              <div className="w-1.5 h-1.5 bg-[var(--muted-foreground)] rounded-full animate-pulse"></div>
+              <div className="w-1.5 h-1.5 bg-[var(--muted-foreground)] rounded-full animate-pulse" style={{ animationDelay: "0.2s" }}></div>
+              <div className="w-1.5 h-1.5 bg-[var(--muted-foreground)] rounded-full animate-pulse" style={{ animationDelay: "0.4s" }}></div>
             </div>
           </div>
         )}

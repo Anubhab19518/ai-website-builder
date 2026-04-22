@@ -1,21 +1,24 @@
-import { Figtree, Geist_Mono, Orbitron } from "next/font/google";
+import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 
-export const fontSans = Figtree({
+// Plus Jakarta Sans — modern, geometric, great for UI body text
+export const fontSans = Plus_Jakarta_Sans({
   variable: "--font-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
-// Use Orbitron for headings for a subtle futuristic feel
-export const fontHeading = Orbitron({
+// Plus Jakarta Sans for headings too — heavier weights feel very editorial
+export const fontHeading = Plus_Jakarta_Sans({
   variable: "--font-heading",
   subsets: ["latin"],
-  weight: ["400", "700"],
+  weight: ["600", "700", "800"],
   display: "swap",
 });
 
-export const fontMono = Geist_Mono({
+export const fontMono = JetBrains_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
+  weight: ["400", "700"],
   display: "swap",
 });

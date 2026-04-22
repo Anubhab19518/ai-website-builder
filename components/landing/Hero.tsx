@@ -1,77 +1,148 @@
-import Link from "next/link";
-import { ArrowRight, Bot, Code2, Database } from "lucide-react";
+"use client";
+
+import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowRight } from "lucide-react";
+
+const FEATURE_TAGS = [
+  "Full-Stack Apps",
+  "Auth & Database",
+  "Custom APIs",
+  "Landing Pages",
+];
+
+const PLACEHOLDER_PROMPTS = [
+  "Build me a SaaS dashboard with authentication...",
+  "Create a full-stack e-commerce app with payments...",
+  "Generate a portfolio site with blog and CMS...",
+  "Make a real-time chat app with WebSockets...",
+];
 
 export function Hero() {
+  const router = useRouter();
+  const [prompt, setPrompt] = useState("");
+  const [placeholderIdx, setPlaceholderIdx] = useState(0);
+  const [displayedPlaceholder, setDisplayedPlaceholder] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const typingRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Animated typewriter placeholder
+  useEffect(() => {
+    let charIdx = 0;
+    const target = PLACEHOLDER_PROMPTS[placeholderIdx];
+    setDisplayedPlaceholder("");
+
+    const type = () => {
+      if (charIdx <= target.length) {
+        setDisplayedPlaceholder(target.slice(0, charIdx));
+        charIdx++;
+        typingRef.current = setTimeout(type, 38);
+      } else {
+        // Pause then cycle
+        typingRef.current = setTimeout(() => {
+          setPlaceholderIdx((i) => (i + 1) % PLACEHOLDER_PROMPTS.length);
+        }, 2400);
+      }
+    };
+    typingRef.current = setTimeout(type, 600);
+    return () => {
+      if (typingRef.current) clearTimeout(typingRef.current);
+    };
+  }, [placeholderIdx]);
+
+  const handleSubmit = () => {
+    if (prompt.trim()) {
+      router.push(`/signup?prompt=${encodeURIComponent(prompt.trim())}`);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
   return (
-    <section className="relative pt-20 pb-28 overflow-hidden bg-futuristic">
-      {/* flowing blobs */}
-      <div className="absolute -left-80 top-0 w-[720px] h-[720px] bg-gradient-to-tr from-[var(--primary)]/12 via-transparent to-transparent rounded-full blur-3xl opacity-45 pointer-events-none" />
-      <div className="absolute right-0 -top-14 w-[520px] h-[520px] bg-gradient-to-br from-[#4c1d95]/10 to-transparent rounded-full blur-2xl opacity-40 pointer-events-none" />
+    <section className="hero-section relative flex flex-col items-center justify-center overflow-hidden">
+      {/* Sky background image */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/hero-sky.png"
+        alt=""
+        aria-hidden="true"
+        className="hero-bg-img"
+        draggable={false}
+      />
 
-      <div className="container mx-auto px-4 relative z-10 flex flex-col lg:flex-row items-center gap-12">
-        <div className="flex-1 text-center lg:text-left">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.03)] text-[var(--primary)] text-sm font-medium mb-6 shadow-sm border border-[var(--glass-border)]">
-            <span>Next‑gen AI code generation</span>
+      {/* Bottom fade to white */}
+      <div className="hero-bottom-fade" />
+
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center text-center px-4 w-full hero-content">
+        {/* Headline */}
+        <h1 className="hero-headline fade-up" style={{ animationDelay: "0.05s" }}>
+          AI App Builder
+        </h1>
+
+        {/* Sub-headline */}
+        <p className="hero-subhead fade-up" style={{ animationDelay: "0.18s" }}>
+          Describe your app idea and watch it come to life. Generate full-stack applications&nbsp;
+          with auth, databases, APIs, and beautiful UIs — all with AI.
+        </p>
+
+        {/* Prompt Input Card */}
+        <div
+          className="hero-input-card fade-up"
+          style={{ animationDelay: "0.3s" }}
+        >
+          <div className="hero-input-inner">
+            <textarea
+              ref={textareaRef}
+              id="hero-prompt"
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={displayedPlaceholder}
+              rows={3}
+              className="hero-textarea"
+              aria-label="Describe your app idea"
+            />
+            <button
+              onClick={handleSubmit}
+              aria-label="Build app"
+              className="hero-submit-btn"
+            >
+              <ArrowRight size={20} strokeWidth={2.5} />
+            </button>
           </div>
 
-          <h1 className="text-5xl lg:text-6xl font-extrabold tracking-tight mb-6 leading-[1.02] bg-clip-text text-transparent bg-gradient-to-r from-[#c4a0ff] to-[var(--primary)] heading-future">
-            Build full‑stack apps with AI
-          </h1>
-
-          <p className="text-lg text-[var(--muted-foreground)] mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-            Describe your idea, iterate with an intelligent assistant, and deploy instantly. Production-ready frontends, APIs, and schemas generated for you.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-            <Link href="/signup" className="w-full sm:w-auto px-7 py-3 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-full font-semibold shadow-md flex items-center gap-2 justify-center hover:brightness-95 transition-all">
-              Get Started <ArrowRight size={18} />
-            </Link>
-            <Link href="#demo" className="w-full sm:w-auto px-7 py-3 bg-[rgba(255,255,255,0.02)] border border-[var(--glass-border)] text-[var(--muted-foreground)] rounded-full font-medium flex items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all">
-              View Demo
-            </Link>
+          {/* Feature tags */}
+          <div className="hero-tags">
+            <span className="hero-tags-label">Add Features:</span>
+            {FEATURE_TAGS.map((tag) => (
+              <button
+                key={tag}
+                onClick={() =>
+                  setPrompt((p) =>
+                    p ? `${p.trim()}, ${tag}` : tag
+                  )
+                }
+                className="hero-tag-btn"
+              >
+                {tag}
+              </button>
+            ))}
           </div>
         </div>
 
-        <div className="flex-1 w-full max-w-xl lg:max-w-none relative">
-          <div className="absolute -inset-1 rounded-2xl blur opacity-40" />
-          <div className="relative glass rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[480px] border-[1px] border-[var(--glass-border)]">
-            <div className="h-12 flex items-center px-4 gap-3">
-              <div className="flex gap-2">
-                <div className="w-3 h-3 rounded-full bg-red-400" />
-                <div className="w-3 h-3 rounded-full bg-yellow-400" />
-                <div className="w-3 h-3 rounded-full bg-green-400" />
-              </div>
-              <div className="mx-auto text-sm text-[var(--muted-foreground)] font-medium font-mono">app-builder.tsx</div>
-            </div>
-            <div className="flex-1 flex overflow-hidden">
-              <div className="w-14 border-r border-[rgba(255,255,255,0.03)] flex flex-col items-center py-6 gap-6 text-[var(--muted-foreground)]">
-                <Bot size={18} className="text-[var(--primary)]" />
-                <Code2 size={18} className="text-[var(--muted-foreground)]" />
-                <Database size={18} className="text-[var(--muted-foreground)]" />
-              </div>
-
-              <div className="flex-1 flex flex-col px-4">
-                <div className="p-3 border-b border-[rgba(255,255,255,0.03)] font-mono text-sm">
-                  <div className="text-[var(--muted-foreground)] mb-2">{"// Describe your app"}</div>
-                  <div className="text-[var(--primary)]">Create a modern dashboard with a light, premium UI and thoughtful spacing.</div>
-                </div>
-
-                <div className="p-4 flex-1 font-mono text-sm overflow-hidden text-[var(--muted-foreground)] space-y-2">
-                  <div className="text-[#b794f4]">import</div>
-                  <div className="pl-4">{"{ useState } from 'react';"}</div>
-                  <div className="pl-4">{"{ DashboardLayout } from '@/components/layout';"}</div>
-                  <div className="text-[#90cdf4] mt-2">export default function Dashboard() {'{'}</div>
-                  <div className="pl-4 text-[var(--muted-foreground)]">// AI is generating UI components...</div>
-                </div>
-
-                <div className="h-1 w-full bg-[rgba(255,255,255,0.02)]">
-                  <div className="h-full bg-gradient-to-r from-[#c4a0ff] to-[var(--primary)] w-2/3" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Social proof */}
+        <p className="hero-social-proof fade-up" style={{ animationDelay: "0.45s" }}>
+          Trusted by <strong>10,000+</strong> developers and teams worldwide
+        </p>
       </div>
     </section>
   );
 }
+
+export default Hero;

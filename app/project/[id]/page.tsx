@@ -1,8 +1,14 @@
-import ChatBox from "@/components/chat/Chatbox"
+import { AgentWorkspace } from "@/components/workspace/AgentWorkspace"
 import { AppSidebar } from "@/components/layout/AppSidebar"
 import { Sparkles, ChevronDown } from "lucide-react"
 
-export default function ProjectPage({ params }: { params: { id: string } }) {
+type Props = {
+  params: Promise<{ id: string }>
+}
+
+export default async function ProjectPage({ params }: Props) {
+
+   const { id } = await params
   return (
     <div className="flex h-screen bg-[#0a0a0a] text-white font-sans overflow-hidden">
       {/* Left Sidebar */}
@@ -18,15 +24,15 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
         <header className="h-16 flex items-center px-6 relative z-20">
           <button className="flex items-center gap-2.5 bg-zinc-900/40 hover:bg-zinc-800/60 transition-all px-4 py-2 rounded-xl border border-zinc-800 text-sm font-medium text-zinc-300 backdrop-blur-md">
             <Sparkles className="w-4 h-4 text-indigo-400" />
-            Project: {params.id.split('-')[0]}
+            Project: {id?.split?.('-')?.[0]}
             <ChevronDown className="w-3.5 h-3.5 text-zinc-500 ml-1" />
           </button>
         </header>
 
-        {/* Center Chat Content */}
-        <div className="flex-1 flex flex-col items-center justify-end md:justify-center px-4 sm:px-6 relative z-10 w-full max-w-5xl mx-auto pb-4">
+        {/* Center Chat & Preview Content */}
+        <div className="flex-1 flex flex-col items-center justify-end md:justify-center px-4 sm:px-6 relative z-10 w-full h-full pb-4">
           <div className="w-full h-[88vh] md:h-[88vh]">
-            <ChatBox projectId={params.id} />
+            <AgentWorkspace projectId={id} />
           </div>
         </div>
       </main>

@@ -24,7 +24,7 @@ export default function ChatInput({
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const handleSend = () => {
+  const handleSend = async() => {
     if ((!input.trim() && files.length === 0) || disabled) return
     
     onSend({
